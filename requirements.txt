@@ -1,0 +1,7 @@
+markdown
+atlassian-python-api
+shareplum
+auto-py-to-exe
+build
+twine
+colorama
