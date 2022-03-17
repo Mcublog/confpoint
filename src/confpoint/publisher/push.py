@@ -11,7 +11,7 @@ from confpoint.version import VERSION
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("push")
 
-WATERAMARK = "\n*This page created by* **[ConfPoint©](https://git.ks2.co/tools/confluencePush)** *script*"
+WATERAMARK = "\n*This page created by* **[ConfPoint©](https://github.com/Mcublog/confpoint)** *script*"
 
 
 def convert_to_html(filename: str = "CHANGELOG.MD", watermark: str = "", watermark_default: bool = True) -> str:

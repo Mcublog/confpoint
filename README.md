@@ -9,7 +9,7 @@ It contains three submodules: *publisher, uploader, downloader*.
 
 * **publisher** module allowed to you a public and remove Confluence page. The page creating from markdown file.
 
-Using example:
+Using example (*PowerShell script*):
 
 ```PowerShell
 py -m confpoint.publisher --user "user@mail.com" --apikey "123abc" `
@@ -24,7 +24,7 @@ py -m confpoint.publisher --user "user@mail.com" --apikey "123abc" `
 
 * **uploader** module allowed to you upload a file or directory to the SharePoint server.
 
-Using example:
+Using example (*PowerShell script*):
 
 ```PowerShell
 py -m confpoint.uploader --user "user@mail.com" --password "pass" `
@@ -38,7 +38,7 @@ py -m confpoint.uploader --user "user@mail.com" --password "pass" `
 
 * **downloader** module allowed to you download a file or directory from the SharePoint server. Also support recursive downloading content from directory.
 
-Using example:
+Using example (*PowerShell script*):
 
 ```PowerShell
 py -m confpoint.uploader --user "user@mail.com" --password "pass" `
