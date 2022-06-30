@@ -1,4 +1,7 @@
 *.pyc
 src/confpoint.egg-info
-env
-dist
+env/
+dist/
+bin/
+build/
+*.spec
