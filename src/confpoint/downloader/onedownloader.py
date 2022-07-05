@@ -10,13 +10,15 @@ from confpoint.version import VERSION
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("onedownloader")
 
+ERROR_CODE = - 1
+
 
 def download_file(args):
     try:
         outputdir: Path = Path(args.outputdir)
     except:
         log.error(f"Uncorrect path to downloading dir {args.outputdir}")
-        sys.exit(1)
+        sys.exit(ERROR_CODE)
     log.info(f"{Clr.CYAN}Downloading...{Clr.RESET}")
     log.info(f"file: {args.file}")
     log.info(f"group: {args.group}")
@@ -34,6 +36,7 @@ def download_file(args):
         log.info(f"Downloading: {Clr.GREEN}SUCCESSFULLY{Clr.RESET}")
     else:
         log.error(f"Downloading: {Clr.GREEN}FAILED{Clr.RESET}")
+        sys.exit(ERROR_CODE)
 
 
 def download_from_directory(args):
@@ -41,7 +44,7 @@ def download_from_directory(args):
         outputdir: Path = Path(args.outputdir)
     except:
         log.error(f"Uncorrect path to downloading dir {args.outputdir}")
-        sys.exit(1)
+        sys.exit(ERROR_CODE)
     log.info(f"{Clr.CYAN}Downloading from directory{Clr.RESET}")
     log.info(f"group: {args.group}")
     log.info(f"remote path: {args.remote}")
@@ -59,6 +62,7 @@ def download_from_directory(args):
         log.info(f"Downloading: {Clr.GREEN}SUCCESSFULLY{Clr.RESET}")
     else:
         log.error(f"Downloading: {Clr.GREEN}FAILED{Clr.RESET}")
+        sys.exit(ERROR_CODE)
 
 
 def main():
@@ -95,7 +99,7 @@ def main():
     try:
         args = parser.parse_args()
     except:
-        return
+        sys.exit(ERROR_CODE)
     if args.file:
         download_file(args)
     else:
