@@ -12,9 +12,11 @@ from confpoint.version import VERSION
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("oneloader")
 
+DESCRIPTION = f'{Clr.GREEN}The SharePoint {Clr.YELLOW}uploader{Clr.GREEN} v{VERSION}{Clr.RESET}'
+
 def main():
     parser = argparse.ArgumentParser(
-        prog='uploader', description=f'{Clr.GREEN}The SharePoint {Clr.YELLOW}uploader{Clr.GREEN} v{VERSION}{Clr.RESET}')
+        prog='uploader', description=DESCRIPTION)
     parser.add_argument('-u', '--user', type=str, help='User name (usually mail address)', required=True)
     parser.add_argument('-p',
                         '--password',
@@ -38,6 +40,7 @@ def main():
         args = parser.parse_args()
     except:
         sys.exit(os.EX_SOFTWARE)
+    log.info(DESCRIPTION)
     files_to_send: List[Path] = []
     if args.file:
         file = Path(args.file)

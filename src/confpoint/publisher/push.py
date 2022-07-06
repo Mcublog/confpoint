@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("push")
 
 WATERAMARK = "\n*This page created by* **[ConfPoint©](https://github.com/Mcublog/confpoint)** *script*"
-
+DESCRIPTION =  f'{Clr.GREEN}The Confluence {Clr.YELLOW}publisher{Clr.GREEN} for submitting or deleting pages v{VERSION}{Clr.RESET}'
 
 def convert_to_html(filename: str = "CHANGELOG.MD", watermark: str = "", watermark_default: bool = True) -> str:
     global WATERAMARK
@@ -78,11 +78,7 @@ def remove(username, token: str, space: str, title: str, url: str):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        prog='push',
-        description=
-        f'{Clr.GREEN}The Confluence {Clr.YELLOW}publisher{Clr.GREEN} for submitting or deleting pages v{VERSION}{Clr.RESET}'
-    )
+    parser = argparse.ArgumentParser(prog='push', description=DESCRIPTION)
     parser.add_argument('-u', '--user', type=str, help='User name in Confluence (usually mail address)', required=True)
     parser.add_argument('-a', '--apikey', type=str, help='Your API key, check README.MD', required=True)
     parser.add_argument('-s', '--space', type=str, help='Space name in Confluence (Some like OBLT)', required=True)
@@ -116,6 +112,7 @@ def main():
     except:
         sys.exit(os.EX_SOFTWARE)
 
+    log.info(DESCRIPTION)
     if args.remove:
         remove(username=args.user, token=args.apikey, space=args.space, title=args.title, url=args.link)
         sys.exit(os.EX_SOFTWARE)

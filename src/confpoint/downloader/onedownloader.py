@@ -11,6 +11,7 @@ from confpoint.version import VERSION
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("onedownloader")
 
+DESCRIPTION = f'{Clr.GREEN}The SharePoint {Clr.YELLOW}downloader{Clr.GREEN} v{VERSION}{Clr.RESET}'
 
 def download_file(args):
     try:
@@ -67,9 +68,7 @@ def download_from_directory(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        prog='downloader',
-        description=f'{Clr.GREEN}The SharePoint {Clr.YELLOW}downloader{Clr.GREEN} v{VERSION}{Clr.RESET}')
+    parser = argparse.ArgumentParser(prog='downloader', description=DESCRIPTION)
     parser.add_argument('-u', '--user', type=str, help='User name (usually mail address)', required=True)
     parser.add_argument('-p',
                         '--password',
@@ -97,6 +96,7 @@ def main():
                         type=str,
                         help='Your shrarepoint site, like https://xxxx.sharepoint.com',
                         required=True)
+    log.info(DESCRIPTION)
     try:
         args = parser.parse_args()
     except:
