@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -10,15 +11,13 @@ from confpoint.version import VERSION
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("onedownloader")
 
-ERROR_CODE = - 1
-
 
 def download_file(args):
     try:
         outputdir: Path = Path(args.outputdir)
     except:
         log.error(f"Uncorrect path to downloading dir {args.outputdir}")
-        sys.exit(ERROR_CODE)
+        sys.exit(os.EX_SOFTWARE)
     log.info(f"{Clr.CYAN}Downloading...{Clr.RESET}")
     log.info(f"file: {args.file}")
     log.info(f"group: {args.group}")
@@ -32,11 +31,12 @@ def download_file(args):
                                 file_to_download=args.file,
                                 public_group=args.group,
                                 sharesite=args.link)
-    if res:
+    if res == os.EX_OK:
         log.info(f"Downloading: {Clr.GREEN}SUCCESSFULLY{Clr.RESET}")
     else:
         log.error(f"Downloading: {Clr.GREEN}FAILED{Clr.RESET}")
-        sys.exit(ERROR_CODE)
+        sys.exit(os.EX_SOFTWARE)
+    return os.EX_OK
 
 
 def download_from_directory(args):
@@ -44,7 +44,7 @@ def download_from_directory(args):
         outputdir: Path = Path(args.outputdir)
     except:
         log.error(f"Uncorrect path to downloading dir {args.outputdir}")
-        sys.exit(ERROR_CODE)
+        sys.exit(os.EX_SOFTWARE)
     log.info(f"{Clr.CYAN}Downloading from directory{Clr.RESET}")
     log.info(f"group: {args.group}")
     log.info(f"remote path: {args.remote}")
@@ -58,11 +58,12 @@ def download_from_directory(args):
                                     recursive=args.recursive,
                                     public_group=args.group,
                                     sharesite=args.link)
-    if res:
+    if res == os.EX_OK:
         log.info(f"Downloading: {Clr.GREEN}SUCCESSFULLY{Clr.RESET}")
     else:
         log.error(f"Downloading: {Clr.GREEN}FAILED{Clr.RESET}")
-        sys.exit(ERROR_CODE)
+        sys.exit(os.EX_SOFTWARE)
+    return os.EX_OK
 
 
 def main():
@@ -99,12 +100,13 @@ def main():
     try:
         args = parser.parse_args()
     except:
-        sys.exit(ERROR_CODE)
+        sys.exit(os.EX_SOFTWARE)
+    ret = os.EX_SOFTWARE
     if args.file:
-        download_file(args)
+        ret = download_file(args)
     else:
-        download_from_directory(args)
-
+        ret = download_from_directory(args)
+    sys.exit(ret)
 
 if __name__ == "__main__":
     main()
