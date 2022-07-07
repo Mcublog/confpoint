@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import List
 
@@ -38,7 +39,7 @@ def main():
     try:
         args = parser.parse_args()
     except:
-        exit(os.EX_SOFTWARE)
+        sys.exit(os.EX_SOFTWARE)
     log.info(DESCRIPTION)
     files_to_send: List[Path] = []
     if args.file:
@@ -47,14 +48,14 @@ def main():
             files_to_send.append(file)
         else:
             log.error(f'File: {file} is not exist')
-            exit(os.EX_SOFTWARE)
+            sys.exit(os.EX_SOFTWARE)
     elif args.directory:
         directory = Path(args.directory)
         if directory.exists():
             files_to_send = [f for f in directory.iterdir() if f.is_file()]
         else:
             log.error(f'Directory: {directory} is not exist')
-            exit(os.EX_SOFTWARE)
+            sys.exit(os.EX_SOFTWARE)
 
         log.info(f"{Clr.CYAN}List of sending files{Clr.RESET}")
         log.info("-" * 10)
@@ -72,7 +73,7 @@ def main():
             log.info(f"File: {f} uploading: {Clr.GREEN}SUCCESSFULLY{Clr.RESET}")
         else:
             log.error(f"File: {f} {Clr.GREEN}NOT SENT{Clr.RESET}")
-            exit(os.EX_SOFTWARE)
+            sys.exit(os.EX_SOFTWARE)
 
 
 if __name__ == "__main__":
