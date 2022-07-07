@@ -1,6 +1,8 @@
 import argparse
 import logging
+import os
 import sys
+from distutils.log import ERROR
 
 import markdown
 import requests
@@ -12,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("push")
 
 WATERAMARK = "\n*This page created by* **[ConfPoint©](https://github.com/Mcublog/confpoint)** *script*"
-
+DESCRIPTION =  f'{Clr.GREEN}The Confluence {Clr.YELLOW}publisher{Clr.GREEN} for submitting or deleting pages v{VERSION}{Clr.RESET}'
 
 def convert_to_html(filename: str = "CHANGELOG.MD", watermark: str = "", watermark_default: bool = True) -> str:
     global WATERAMARK
@@ -38,21 +40,27 @@ def push(html_page: str, username, token: str, space: str, parent_title: str = "
         page_id = confluence.get_page_id(space=space, title=title)
     except requests.HTTPError as e:
         log.error(e)
-        return
+        return os.EX_SOFTWARE
     if parent_title:
         parent_id = confluence.get_page_id(space=space, title=parent_title)
         if parent_id == None:
             log.error("Parent page not found -- check it name: %s" % (parent_title))
-            return
+            return os.EX_SOFTWARE
     try:
         log.info("Try to create page: %s | %s" % (space, title))
         confluence.create_page(space=space, parent_id=parent_id, title=title, body=html_page)
         log.info("Page create successfully")
     except requests.HTTPError as e:
         log.error(e)
+        return os.EX_SOFTWARE
     if page_id != None:
         log.info("Page id: " + page_id)
-        confluence.update_page(parent_id=parent_id, page_id=page_id, title=title, body=html_page)
+        try:
+            confluence.update_page(parent_id=parent_id, page_id=page_id, title=title, body=html_page)
+        except Exception as e:
+            log.error(e)
+            return os.EX_SOFTWARE
+        return os.EX_OK
 
 
 def remove(username, token: str, space: str, title: str, url: str):
@@ -66,14 +74,11 @@ def remove(username, token: str, space: str, title: str, url: str):
             log.info("Page in space: %s with title: %s -- does not exist" % (space, title))
     except requests.HTTPError as e:
         log.error(e)
+        return os.EX_SOFTWARE
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        prog='push',
-        description=
-        f'{Clr.GREEN}The Confluence {Clr.YELLOW}publisher{Clr.GREEN} for submitting or deleting pages v{VERSION}{Clr.RESET}'
-    )
+    parser = argparse.ArgumentParser(prog='push', description=DESCRIPTION)
     parser.add_argument('-u', '--user', type=str, help='User name in Confluence (usually mail address)', required=True)
     parser.add_argument('-a', '--apikey', type=str, help='Your API key, check README.MD', required=True)
     parser.add_argument('-s', '--space', type=str, help='Space name in Confluence (Some like OBLT)', required=True)
@@ -105,25 +110,27 @@ def main():
     try:
         args = parser.parse_args()
     except:
-        return
+        sys.exit(os.EX_SOFTWARE)
 
+    log.info(DESCRIPTION)
     if args.remove:
         remove(username=args.user, token=args.apikey, space=args.space, title=args.title, url=args.link)
-        sys.exit(0)
+        sys.exit(os.EX_SOFTWARE)
     page = convert_to_html(filename=args.file, watermark=args.watermark, watermark_default=args.watermark_default)
     if not page:
         log.warning("Page is empty -- nothing to send")
-        sys.exit(1)
+        sys.exit(os.EX_SOFTWARE)
     if not args.title:
         log.warning("Title is empty, check it")
-        sys.exit(1)
-    push(html_page=page,
+        sys.exit(os.EX_SOFTWARE)
+    ret = push(html_page=page,
          username=args.user,
          token=args.apikey,
          space=args.space,
          parent_title=args.parent,
          title=args.title,
          url=args.link)
+    sys.exit(ret)
 
 
 if __name__ == "__main__":

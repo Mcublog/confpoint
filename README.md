@@ -76,3 +76,4 @@ py -m confpoint.uploader --user "user@mail.com" --password "pass" `
 * Get token for confluence.[Check this arcticle](https://docs.searchunify.com/Content/Content-Sources/Atlassian-Jira-Confluence-Authentication-Create-API-Token.htm) [or this](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html)
 * For upload files to SharePoint use your login and password (login == --user; password == --apikey)
 * Open file pusher.cmd and write your login, token and etc
+* Docker imgage with [Confpoint and PowerShell](https://github.com/Mcublog/confpoint-docker)
