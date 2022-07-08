@@ -1,4 +1,6 @@
 import logging
+import os
+import sys
 from pathlib import Path
 from typing import Any, Tuple, Union
 
@@ -12,7 +14,7 @@ log = logging.getLogger(__name__.split('.')[-1])
 
 def __error_msg(message) -> bool:
     log.error(f"{Clr.RED}{message}{Clr.RESET}")
-    return False
+    sys.exit(os.EX_SOFTWARE)
 
 
 def __connect_to_site(username: str,
@@ -103,5 +105,5 @@ def dowload_directory(username: str, password: str, outpath: Path, remote_folder
             __download_all_files_from_folder(site.Folder(f"{remote_folder}/{dir}"), outpath.joinpath(dir))
         except Exception as e:
             log.error(f"{Clr.RED}{e}{Clr.RESET}")
-            return False
+            sys.exit(os.EX_SOFTWARE)
     return True
