@@ -25,19 +25,17 @@ def download_file(args):
     log.info(f"remote path: {args.remote}")
     log.info(f"download directory: {outputdir}")
     log.info(f"{Clr.CYAN}{'-' * 10}{Clr.RESET}")
-    res = shareup.file_download(username=args.user,
+    if shareup.file_download(username=args.user,
                                 password=args.password,
                                 outpath=outputdir,
                                 remote_folder=args.remote,
                                 file_to_download=args.file,
                                 public_group=args.group,
-                                sharesite=args.link)
-    if res == os.EX_OK:
+                                sharesite=args.link):
         log.info(f"Downloading: {Clr.GREEN}SUCCESSFULLY{Clr.RESET}")
-    else:
-        log.error(f"Downloading: {Clr.GREEN}FAILED{Clr.RESET}")
-        sys.exit(os.EX_SOFTWARE)
-    return os.EX_OK
+        return os.EX_OK
+    log.error(f"Downloading: {Clr.RED}FAILED{Clr.RESET}")
+    return os.EX_SOFTWARE
 
 
 def download_from_directory(args):
@@ -52,19 +50,17 @@ def download_from_directory(args):
     log.info(f"download directory: {outputdir}")
     log.info(f"downloading recursive: {Clr.CYAN}{args.recursive}{Clr.RESET}")
     log.info(f"{Clr.CYAN}{'-' * 10}{Clr.RESET}")
-    res = shareup.dowload_directory(username=args.user,
+    if shareup.dowload_directory(username=args.user,
                                     password=args.password,
                                     outpath=outputdir,
                                     remote_folder=args.remote,
                                     recursive=args.recursive,
                                     public_group=args.group,
-                                    sharesite=args.link)
-    if res == os.EX_OK:
+                                    sharesite=args.link):
         log.info(f"Downloading: {Clr.GREEN}SUCCESSFULLY{Clr.RESET}")
-    else:
-        log.error(f"Downloading: {Clr.GREEN}FAILED{Clr.RESET}")
-        sys.exit(os.EX_SOFTWARE)
-    return os.EX_OK
+        return os.EX_OK
+    log.error(f"Downloading: {Clr.RED}FAILED{Clr.RESET}")
+    return os.EX_SOFTWARE
 
 
 def main():
@@ -101,12 +97,7 @@ def main():
         args = parser.parse_args()
     except:
         sys.exit(os.EX_SOFTWARE)
-    ret = os.EX_SOFTWARE
-    if args.file:
-        ret = download_file(args)
-    else:
-        ret = download_from_directory(args)
-    sys.exit(ret)
+    sys.exit(download_file(args) if args.file else download_from_directory(args))
 
 if __name__ == "__main__":
     main()
