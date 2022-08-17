@@ -41,12 +41,12 @@ py -m confpoint.uploader --user "user@mail.com" --password "pass" `
 Using example (*PowerShell script*):
 
 ```PowerShell
-py -m confpoint.uploader --user "user@mail.com" --password "pass" `
-                         --outputdir "path/to/local/output/directory" `
-                         --remote "remote/path/in/SharePoint/server" `
-                         --group "your sharepoint group (somthing like /sites/Team)" `
-                         --link "https://your_domain.sharepoint.com" `
-                         --recursive
+py -m confpoint.downloader --user "user@mail.com" --password "pass" `
+                           --outputdir "path/to/local/output/directory" `
+                           --remote "remote/path/in/SharePoint/server" `
+                           --group "your sharepoint group (somthing like /sites/Team)" `
+                           --link "https://your_domain.sharepoint.com" `
+                           --recursive
 ```
 
 ## Usefully notes
