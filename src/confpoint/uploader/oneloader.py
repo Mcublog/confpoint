@@ -5,14 +5,17 @@ import sys
 from pathlib import Path
 from typing import List
 
-import confpoint.shareup as shareup
 from colorama import Fore as Clr
+
+import confpoint.shareup as shareup
 from confpoint.version import VERSION
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("oneloader")
 
 DESCRIPTION = f'{Clr.GREEN}The SharePoint {Clr.YELLOW}uploader{Clr.GREEN} v{VERSION}{Clr.RESET}'
+
+DEFAULT_CONNECTION_TIMEOUT_S = 15
 
 def main():
     parser = argparse.ArgumentParser(
@@ -36,6 +39,14 @@ def main():
                         type=str,
                         help='Your shrarepoint site, like https://xxxx.sharepoint.com',
                         required=True)
+    parser.add_argument(
+        '-t',
+        '--timeout',
+        type=int,
+        help=
+        f'Connection timeout, usually need to increase on big files (default: {DEFAULT_CONNECTION_TIMEOUT_S} seconds)',
+        required=False,
+        default=DEFAULT_CONNECTION_TIMEOUT_S)
     try:
         args = parser.parse_args()
     except:
@@ -69,7 +80,8 @@ def main():
                                public_group=args.group,
                                path=args.remote,
                                fileraw=bytes(),
-                               sharesite=args.link):
+                               sharesite=args.link,
+                               timeout=args.timeout):
             log.info(f"File: {f} uploading: {Clr.GREEN}SUCCESSFULLY{Clr.RESET}")
         else:
             log.error(f"File: {f} {Clr.GREEN}NOT SENT{Clr.RESET}")
