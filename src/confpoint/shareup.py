@@ -48,7 +48,8 @@ def file_upload(username: str,
                 path: str = "",
                 sharesite: str = "",
                 public_group: str = "",
-                filename: str = "") -> bool:
+                filename: str = "",
+                timeout:int = 15) -> bool:
     res, _, folder = __connect_to_site(username=username,
                                        password=password,
                                        path=path,
@@ -68,6 +69,7 @@ def file_upload(username: str,
             content = f.read()
         name = file_to_load.name
     log.info("Loading ...")
+    folder.timeout = timeout
     folder.upload_file(content, name)
     return True
 

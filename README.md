@@ -31,7 +31,8 @@ py -m confpoint.uploader --user "user@mail.com" --password "pass" `
                          --file "path/to/uploading/file" `
                          --remote "remote/path/in/SharePoint/server" `
                          --group "your sharepoint group (somthing like /sites/Team)" `
-                         --link "https://your_domain.sharepoint.com"
+                         --link "https://your_domain.sharepoint.com" `
+                         --timeout 10
 ```
 
 ----------------------------------------------------------------
