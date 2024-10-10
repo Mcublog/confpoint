@@ -220,8 +220,16 @@ def main():
 
     tags = utils.get_image_tags(page)
     page = utils.replace_imgage_tag_for_confluence(page, tags)
-    if (ret := push(session=session, html_page=page, parent_title=args.parent)) != 0:
+    if (ret := push(session=session, html_page=page,
+                    parent_title=args.parent)) != 0:
         sys.exit(ret)
+
+    response = session.confluence.get_page_by_id(session.page_id,
+                                            expand=None,
+                                            status=None,
+                                            version=None)
+    if link := utils.get_line_by_page_response(response):
+        log.info(f"Article link: {link}")
 
     if not tags:
         sys.exit(ret)

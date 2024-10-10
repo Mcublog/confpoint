@@ -28,6 +28,18 @@ def replace_imgage_tag_for_confluence(html: str,
     return output
 
 
+def get_line_by_page_response(response: dict) -> str:
+    if not response:
+        return ""
+    if not "_links" in response:
+        return ""
+    if not "base" in response["_links"]:
+        return ""
+    if not "webui" in response["_links"]:
+        return ""
+    return response["_links"]["base"] + response["_links"]["webui"]
+
+
 if __name__ == "__main__":
     TEST_HTML = '<h1>Test doc</h1>\n<p>Some text. Bla bla.</p>\n<p><img alt="img" src="/doc/20231020_163926.png" />\n<img alt="img" src="/doc/2022-03-13_18-44.gif" /></p>\n<p>Some text. Bla bla.\nSome text. Bla bla.</p>'
     print(TEST_HTML)
