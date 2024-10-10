@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Push test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceRoot}/src/confpoint/publisher/push.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceRoot}/src"
+            },
+            "args": [
+                "--user",
+                "${env:JIRA_EMAIL}",
+                "--apikey",
+                "${env:JIRA_TOKEN}",
+                "--space",
+                "${env:JIRA_ARTICLE_SPACE}",
+                "--parent",
+                "${env:JIRA_ARTICLE_PARENT}",
+                "--title",
+                "Test",
+                "--file", "${workspaceRoot}/test_dir/doc_with_image.md",
+                "--link",
+                "${env:JIRA_SITE}"
+            ]
+        }
+    ]
+}
