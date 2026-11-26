@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 import time
+from tempfile import TemporaryDirectory
 from dataclasses import dataclass
 
 import markdown
@@ -15,6 +16,7 @@ from colorama import Fore as Clr
 import confpoint.utils as utils
 from confpoint.image_tag import ImageTag
 from confpoint.version import VERSION
+from confpoint.publisher.mermaid import MermaidExtension, MermaidRenderer
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("push")
@@ -32,7 +34,8 @@ class ConfSession:
 
 def convert_to_html(filename: str = "CHANGELOG.MD",
                     watermark: str = "",
-                    watermark_default: bool = True) -> str:
+                    watermark_default: bool = True,
+                    mermaid_renderer=None) -> str:
     global WATERAMARK
     lines = ""
     try:
@@ -45,11 +48,13 @@ def convert_to_html(filename: str = "CHANGELOG.MD",
         lines += WATERAMARK
     elif watermark:
         lines += watermark
-    lines = markdown.markdown(lines,
-                              extensions=[
-                                  'markdown.extensions.fenced_code',
-                                  'markdown.extensions.tables'
-                              ])
+    extensions = [
+                                   'markdown.extensions.fenced_code',
+                                   'markdown.extensions.tables'
+                 ]
+    if mermaid_renderer is not None:
+        extensions.append(MermaidExtension(mermaid_renderer))
+    lines = markdown.markdown(lines, extensions=extensions)
     return lines
 
 
@@ -186,6 +191,13 @@ def main():
                         action="store_true",
                         required=False,
                         default=False)
+    parser.add_argument('--mermaid-cli', default='mmdc',
+                        help='Local Mermaid CLI command (default: mmdc)')
+    parser.add_argument('--mermaid-format', choices=('png', 'svg'), default='png')
+    parser.add_argument('--mermaid-timeout', type=float, default=120,
+                        help='Rendering timeout per diagram in seconds')
+    parser.add_argument('--mermaid-no-sandbox', action='store_true',
+                        help='Disable Chromium sandbox for trusted diagrams only')
     try:
         args = parser.parse_args()
     except Exception as e:
@@ -200,9 +212,24 @@ def main():
                title=args.title,
                url=args.link)
         sys.exit(os.EX_SOFTWARE)
-    page = convert_to_html(filename=args.file,
-                           watermark=args.watermark,
-                           watermark_default=args.watermark_default)
+    # Keep rendered images alive until attach_images completes, including on errors.
+    with TemporaryDirectory(prefix='confpoint-mermaid-') as directory:
+        publish(args, directory)
+
+
+def publish(args, directory):
+    try:
+        renderer = MermaidRenderer(directory, args.file, command=args.mermaid_cli,
+                                   image_format=args.mermaid_format,
+                                   timeout=args.mermaid_timeout,
+                                   no_sandbox=args.mermaid_no_sandbox)
+        page = convert_to_html(filename=args.file,
+                               watermark=args.watermark,
+                               watermark_default=args.watermark_default,
+                               mermaid_renderer=renderer)
+    except (RuntimeError, ValueError, TypeError) as e:
+        log.error(e)
+        sys.exit(os.EX_SOFTWARE)
     if not page:
         log.warning("Page is empty -- nothing to send")
         sys.exit(os.EX_SOFTWARE)
@@ -220,6 +247,7 @@ def main():
 
     tags = utils.get_image_tags(page)
     page = utils.replace_imgage_tag_for_confluence(page, tags)
+    tags += tuple(renderer.tags)
     if (ret := push(session=session, html_page=page,
                     parent_title=args.parent)) != 0:
         sys.exit(ret)

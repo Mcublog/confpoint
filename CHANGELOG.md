@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0 (2026-11-26)
+
+#### Features
+
+* (Publisher): Automatically render Mermaid diagrams from Markdown as PNG or SVG attachments using local Mermaid CLI.
+* (Publisher): Add Mermaid CLI, image format, rendering timeout and Chromium sandbox options.
+
 ## 1.0.5 (2022-08-01)
 
 #### Fixes
@@ -30,4 +37,3 @@ Full set of changes: [`1.0.2...1.0.3`](https://github.com/Mcublog/confpoint/comp
 Full set of changes: [`1.0.0...1.0.2`](https://github.com/Mcublog/confpoint/compare/1.0.0...1.0.2)
 
 ## 1.0.0 (2022-03-18)
-

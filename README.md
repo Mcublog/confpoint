@@ -22,6 +22,37 @@ py -m confpoint.publisher --user "user@mail.com" --apikey "123abc" `
 
 ----------------------------------------------------------------
 
+### Mermaid diagrams
+
+The publisher automatically renders fenced `mermaid` blocks as PNG attachments.
+The original Markdown is never modified; intermediate files are removed after
+publication. Documents without Mermaid do not require any additional tools.
+
+Install Node.js and Mermaid CLI locally before publishing diagrams:
+
+```sh
+npm install -g @mermaid-js/mermaid-cli
+confpoint-publisher --file docs/overview.md --user "$JIRA_EMAIL" \
+  --apikey "$JIRA_TOKEN" --space KKT --title "Overview" --link "$JIRA_SITE"
+```
+
+Optional publisher arguments:
+
+* `--mermaid-cli mmdc`: CLI command (a quoted command with arguments is supported).
+* `--mermaid-format png|svg`: attachment format; PNG is the default.
+* `--mermaid-timeout 120`: positive per-diagram timeout in seconds.
+* `--mermaid-no-sandbox`: disable Chromium sandbox **only for trusted diagrams**
+  on systems where the sandbox cannot run. The default keeps sandbox enabled.
+
+Rendering errors stop publication before the page is changed. Upload failures
+can still leave a partially published page: page updates and attachment uploads
+are not atomic. Re-publishing the same document updates stable attachment names;
+obsolete attachments are not deleted automatically. Keep document basenames
+unique when publishing multiple source documents into the same page.
+No external rendering service is used and no tools are downloaded automatically.
+
+----------------------------------------------------------------
+
 * **uploader** module allowed to you upload a file or directory to the SharePoint server.
 
 Using example (*PowerShell script*):
